@@ -6,9 +6,9 @@
 #SBATCH --ntasks=24
 #SBATCH --mem=214G
 #SBATCH --job-name=trim
-#SBATCH --output=/center1/GLASSLAB/salmgren/lcwgs/job_outfiles/pherr_trimming_%A-%a.out
-#SBATCH --error=/center1/GLASSLAB/salmgren/lcwgs/job_outfiles/pherr_trimming_%A-%a.err
-#SBATCH --array=1-40%5
+#SBATCH --output=/center1/GLASSLAB/salmgren/lcwgs/job_outfiles/pherr_trim_%A-%a.out
+#SBATCH --error=/center1/GLASSLAB/salmgren/lcwgs/job_outfiles/pherr_trim_%A-%a.err
+#SBATCH --array=1-120%5
 
 ulimit -s unlimited
 ulimit -l unlimited
@@ -32,8 +32,7 @@ done
 sample_id=$(echo $fq_r1 | sed 's!^.*/!!')
 sample_id=${sample_id%%_*}
 
-     
-
+# use trimmomatic for quality + adapter trimming 
 java -jar ${TRIMMOMATIC} PE -threads 4 -phred33 ${fq_r1} ${fq_r2} \
 /center1/GLASSLAB/salmgren/lcwgs/trimmed/${sample_id}_trimmed_R1_paired.fq.gz \
 /center1/GLASSLAB/salmgren/lcwgs/trimmed/${sample_id}_trimmed_R1_unpaired.fq.gz \
@@ -41,7 +40,9 @@ java -jar ${TRIMMOMATIC} PE -threads 4 -phred33 ${fq_r1} ${fq_r2} \
 /center1/GLASSLAB/salmgren/lcwgs/trimmed/${sample_id}_trimmed_R2_unpaired.fq.gz \
 ILLUMINACLIP:/home/salmgren/applications/Trimmomatic-0.39/adapters/NexteraPE-PE.fa:2:30:10:1:true MINLEN:40
         # 2(mismatches allowed):30(bp overlap required between R1 R2):10(min bp to match before trimming):1(min adapter bp):true(keep both reads)
-        # just for CB and PM samples (TruSeq adapters)
+        # Togiak & Cordova samples = TruSeq3 adapters 
+        # all other samples = NexteraPE adapters
+# use fastp for quality + polyG tail trimming 
 fastp --trim_poly_g -L -A --cut_right \
 -i /center1/GLASSLAB/salmgren/lcwgs/trimmed/${sample_id}_trimmed_R1_paired.fq.gz \
 -o /center1/GLASSLAB/salmgren/lcwgs/trimmed/${sample_id}_trimmed_clipped_R1_paired.fq.gz \
