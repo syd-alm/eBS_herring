@@ -248,6 +248,8 @@ extract_fname_bestlike *.log > all_linked_bestlike.txt
   - third number = ??? nobody knows?
     - so individual heterozygosity is second number / sum of first and second value. (Technically, it's the 2nd num / sum(1st, 2nd, and 3rd), but the third is always 0 in my data)
     - EX) .ml = 3781870.188860 1335719.811140 0.000000
+      1335719.811140 / (3781870.188860 + 1335719.811140 + 0.000000) = 0.261
+
 - can plot averages and individual ranges in [violin/box plots](https://github.com/syd-alm/eBS_herring/blob/main/plots/individual_heterozygosity.R)
 
 ### nucleotide diversity 
